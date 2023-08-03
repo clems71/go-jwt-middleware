@@ -69,9 +69,6 @@ func New(
 	if issuerURL == "" {
 		return nil, errors.New("issuer url is required but was empty")
 	}
-	if len(audience) == 0 {
-		return nil, errors.New("audience is required but was empty")
-	}
 	if _, ok := allowedSigningAlgorithms[signatureAlgorithm]; !ok {
 		return nil, errors.New("unsupported signature algorithm")
 	}
@@ -142,7 +139,7 @@ func validateClaimsWithLeeway(actualClaims jwt.Claims, expected jwt.Expected, le
 		return jwt.ErrInvalidIssuer
 	}
 
-	foundAudience := false
+	foundAudience := len(expectedClaims.Audience) == 0
 	for _, value := range expectedClaims.Audience {
 		if actualClaims.Audience.Contains(value) {
 			foundAudience = true
